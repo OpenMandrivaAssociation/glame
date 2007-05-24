@@ -39,6 +39,7 @@ BuildRequires: 	libvorbis-devel
 BuildRequires:	libltdl-devel
 #gw, that's for /usr/X11R6/include/X11/bitmaps/hlines3 :
 BuildRequires:  x11-data-bitmaps
+BuildRequires:	gettext-devel
 
 %description
 GLAME is meant to be the GIMP of audio processing. It is designed to be
