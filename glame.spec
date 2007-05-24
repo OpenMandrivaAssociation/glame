@@ -44,6 +44,7 @@ BuildRequires:	gettext-devel
 %if %cvs
 BuildRequires:	cvs
 %endif
+BuildRequires:	texinfo
 
 %description
 GLAME is meant to be the GIMP of audio processing. It is designed to be
