@@ -1,10 +1,15 @@
-%define name glame
-%define version 2.0.2
-%define cvs 20070523
+%define name	glame
+%define version	2.0.2
+%define cvs	0
+%define pre	rc1
 %if %cvs
 %define release %mkrel 0.%cvs.1
 %else
-%define release %mkrel 6
+%if %pre
+%define release	%mkrel 0.%pre.1
+%else
+%define release %mkrel 1
+%endif
 %endif
 %define build_plf 0
 %{?_with_plf: %{expand: %%global build_plf 1}}
@@ -16,17 +21,17 @@ Summary:   	A sound editor
 Name:      	%{name}
 Version:   	%{version}
 Release:   	%{release}
-License: 	GPL
+License: 	GPLv2+
 Group:     	Sound
 %if %cvs
 Source0:	%{name}-%{cvs}.tar.bz2
 %else
-Source0:   	http://prdownloads.sourceforge.net/glame/%{name}-%{version}.tar.bz2
+Source0:   	http://prdownloads.sourceforge.net/glame/%{name}-%{version}-%{pre}.tar.gz
 %endif
 Source1:      	%{name}-48x48.png
 Source2:      	%{name}-32x32.png
 Source3:      	%{name}-16x16.png
-Patch: glame-2.0.1-xdg.patch
+Patch:		glame-2.0.1-xdg.patch
 URL:       	http://glame.sourceforge.net/ 
 Buildroot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	libgnomeui2-devel
@@ -75,7 +80,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %cvs
 %setup -q -n %{name}
 %else
+%if %pre
+%setup -q -n %{name}-%{version}-%{pre}
+%else
 %setup -q
+%endif
 %endif
 %patch -p1
 
@@ -84,51 +93,37 @@ rm -rf $RPM_BUILD_ROOT
 ./autogen.sh
 %endif
 # --enable-maintainer-mode appears to be needed to generate version.texi...
-./configure --prefix=%_prefix --libdir=%_libdir --enable-maintainer-mode
+%configure2_5x --enable-maintainer-mode
 %make
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
 
-(cd $RPM_BUILD_ROOT
-mkdir -p .%{_menudir}
-cat > .%{_menudir}/%{name} <<EOF
-?package(%{name}):\
-command="%{_bindir}/glame"\
-title="Glame"\
-longtitle="An audio processing tool"\
-needs="x11"\
-section="Multimedia/Sound"\
-icon="%{name}.png" xdg="true"
-EOF
-)
 mv %buildroot%{_datadir}/gnome/apps/Multimedia/ %buildroot%{_datadir}/applications
-# install icons
-mkdir -p $RPM_BUILD_ROOT{%{_liconsdir},%{_miconsdir},%{_iconsdir}}
-mkdir -p $RPM_BUILD_ROOT%{_iconsdir}/hicolor/{48x48,32x32,16x16}/apps
-cp %{SOURCE1} $RPM_BUILD_ROOT%{_liconsdir}/%{name}.png
-cp %{SOURCE1} $RPM_BUILD_ROOT%{_iconsdir}/hicolor/48x48/apps/%{name}.png
-cp %{SOURCE2} $RPM_BUILD_ROOT%{_iconsdir}/%{name}.png
-cp %{SOURCE2} $RPM_BUILD_ROOT%{_iconsdir}/hicolor/32x32/apps/%{name}.png
-cp %{SOURCE3} $RPM_BUILD_ROOT%{_miconsdir}/%{name}.png
-cp %{SOURCE3} $RPM_BUILD_ROOT%{_iconsdir}/hicolor/16x16/apps/%{name}.png
 
-%{find_lang} %{name}
+# install icons
+mkdir -p $RPM_BUILD_ROOT%{_iconsdir}/hicolor/{48x48,32x32,16x16}/apps
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_iconsdir}/hicolor/48x48/apps/%{name}.png
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_iconsdir}/hicolor/32x32/apps/%{name}.png
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_iconsdir}/hicolor/16x16/apps/%{name}.png
+
 #clean unpackaged files
 rm -f %buildroot%_libdir/glame/*a
 
+%{find_lang} %{name}
+
 %post
-/sbin/install-info %{_infodir}/glame.info.bz2 %{_infodir}/dir
-/sbin/install-info %{_infodir}/glame-dev.info.bz2 %{_infodir}/dir
+/sbin/install-info %{_infodir}/glame.info %{_infodir}/dir
+/sbin/install-info %{_infodir}/glame-dev.info %{_infodir}/dir
 %{update_menus}
-%update_icon_cache hicolor
+%{update_icon_cache hicolor}
 
 %postun
-/sbin/install-info --delete %{_infodir}/glame.info.bz2 %{_infodir}/dir
-/sbin/install-info --delete %{_infodir}/glame-dev.info.bz2 %{_infodir}/dir
+/sbin/install-info --delete %{_infodir}/glame.info %{_infodir}/dir
+/sbin/install-info --delete %{_infodir}/glame-dev.info %{_infodir}/dir
 %{clean_menus}
-%clean_icon_cache hicolor
+%{clean_icon_cache hicolor}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -141,10 +136,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/glame.desktop
 %{_datadir}/%{name}/
 %{_infodir}/*
-%{_menudir}/*
-%{_iconsdir}/%{name}.png
-%{_liconsdir}/%{name}.png
-%{_miconsdir}/%{name}.png
 %{_iconsdir}/hicolor/48x48/apps/%{name}.png
 %{_iconsdir}/hicolor/32x32/apps/%{name}.png
 %{_iconsdir}/hicolor/16x16/apps/%{name}.png
