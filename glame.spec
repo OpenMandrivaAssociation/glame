@@ -2,11 +2,12 @@
 %define version	2.0.2
 %define cvs	0
 %define pre	rc1
+%define date	20070607
 %if %cvs
 %define release %mkrel 0.%cvs.1
 %else
 %if %pre
-%define release	%mkrel 0.%pre.1
+%define release	%mkrel 0.%date.%pre.1
 %else
 %define release %mkrel 1
 %endif
