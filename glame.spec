@@ -114,14 +114,14 @@ rm -f %buildroot%_libdir/glame/*a
 %{find_lang} %{name}
 
 %post
-/sbin/install-info %{_infodir}/glame.info %{_infodir}/dir
-/sbin/install-info %{_infodir}/glame-dev.info %{_infodir}/dir
+%_install_info %name
+%_install_info glame-dev
 %{update_menus}
 %{update_icon_cache hicolor}
 
 %postun
-/sbin/install-info --delete %{_infodir}/glame.info %{_infodir}/dir
-/sbin/install-info --delete %{_infodir}/glame-dev.info %{_infodir}/dir
+%_remove_install_info %name
+%_remove_install_info glame-dev
 %{clean_menus}
 %{clean_icon_cache hicolor}
 
