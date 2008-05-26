@@ -86,10 +86,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %build
-%if %build_plf
-#gw else the configure check for libmp3lame fails
-%define _disable_ld_as_needed 1
-%endif
 # --enable-maintainer-mode appears to be needed to generate version.texi...
 %configure2_5x --enable-maintainer-mode
 %make
