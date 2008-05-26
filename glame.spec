@@ -7,7 +7,7 @@
 %define release %mkrel 0.%cvs.1
 %else
 %if %pre
-%define release	%mkrel 0.%date.%pre.1
+%define release	%mkrel 0.%date.%pre.2
 %else
 %define release %mkrel 1
 %endif
@@ -42,6 +42,7 @@ BuildRequires: 	fftw2-devel
 BuildRequires: 	ladspa-devel
 BuildRequires: 	libmad-devel
 BuildRequires: 	libvorbis-devel
+BuildRequires: 	libalsa-devel
 BuildRequires:	libltdl-devel
 #gw, that's for /usr/X11R6/include/X11/bitmaps/hlines3 :
 BuildRequires:  x11-data-bitmaps
@@ -51,6 +52,11 @@ BuildRequires:	gettext-devel
 BuildRequires:	cvs
 %endif
 BuildRequires:	texinfo
+%if %build_plf
+Provides: glame-lame
+Obsoletes: glame-lame
+BuildRequires: liblame-devel
+%endif
 
 %description
 GLAME is meant to be the GIMP of audio processing. It is designed to be
@@ -59,21 +65,8 @@ and compatible systems. Supported platforms are Linux and IRIX.
 
 %if %build_plf
 This package is in PLF as it might violate some patents.
-
-%package lame
-Group: Sound
-Summary: MP3 plugin for glame
-BuildRequires: liblame-devel
-Requires: %name = %version
-
-%description lame
-GLAME is meant to be the GIMP of audio processing. It is designed to be
-a powerful, fast, stable, and easily extensible sound editor for Linux
-and compatible systems. Supported platforms are Linux and IRIX. 
-
-This is the MP3 encoding plugin for glame based on lame. It is in PLF
-for patent reasons.
 %endif
+
 
 %prep
 rm -rf $RPM_BUILD_ROOT
@@ -88,10 +81,14 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %endif
 %patch -p1
-
-%build
 %if %cvs
 ./autogen.sh
+%endif
+
+%build
+%if %build_plf
+#gw else the configure check for libmp3lame fails
+%define _disable_ld_as_needed 1
 %endif
 # --enable-maintainer-mode appears to be needed to generate version.texi...
 %configure2_5x --enable-maintainer-mode
@@ -133,18 +130,25 @@ rm -rf $RPM_BUILD_ROOT
 %defattr (-,root,root)
 %doc AUTHORS COPYING ChangeLog INSTALL NEWS README TODO
 %{_bindir}/*
-%{_libdir}/glame/
+%dir %{_libdir}/glame/
+%{_libdir}/glame/audio_io_alsa.so
+%{_libdir}/glame/audio_io_esd.so
+%{_libdir}/glame/audio_io_oss.so
+%{_libdir}/glame/debug.so
+%{_libdir}/glame/fft_plugins.so
+%{_libdir}/glame/file_oggvorbis_out.so
+%{_libdir}/glame/mixer.so
+%{_libdir}/glame/normalize.so
+%{_libdir}/glame/resample.so
+%{_libdir}/glame/tutorial.so
+%if %build_plf
+%{_libdir}/glame/file_mp3_out.so
+%endif
 %{_datadir}/applications/glame.desktop
 %{_datadir}/%{name}/
 %{_infodir}/*
 %{_iconsdir}/hicolor/48x48/apps/%{name}.png
 %{_iconsdir}/hicolor/32x32/apps/%{name}.png
 %{_iconsdir}/hicolor/16x16/apps/%{name}.png
-
-%if %build_plf
-%files lame
-%defattr (-,root,root)
-%{_libdir}/glame/file_mp3_out.so
-%endif
 
 
