@@ -110,14 +110,18 @@ rm -f %buildroot%_libdir/glame/*a
 %post
 %_install_info %name
 %_install_info glame-dev
+%if %mdkversion < 200900
 %{update_menus}
 %{update_icon_cache hicolor}
+%endif
 
 %postun
 %_remove_install_info %name
 %_remove_install_info glame-dev
+%if %mdkversion < 200900
 %{clean_menus}
 %{clean_icon_cache hicolor}
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
