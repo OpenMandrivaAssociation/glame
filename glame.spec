@@ -4,12 +4,12 @@
 %define pre	rc1
 %define date	20070607
 %if %cvs
-%define release %mkrel 0.%cvs.1
+%define release %mkrel 2.%cvs.1
 %else
 %if %pre
-%define release	%mkrel 0.%date.%pre.2
+%define release	%mkrel 3.%date.%pre.2
 %else
-%define release %mkrel 1
+%define release %mkrel 2
 %endif
 %endif
 %define build_plf 0
