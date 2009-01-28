@@ -4,12 +4,12 @@
 %define pre	rc1
 %define date	20070607
 %if %cvs
-%define release %mkrel 2.%cvs.1
+%define release %mkrel 0.%cvs.1
 %else
 %if %pre
-%define release	%mkrel 3.%date.%pre.2
+%define release	%mkrel 0.%date.%pre.3
 %else
-%define release %mkrel 2
+%define release %mkrel 1
 %endif
 %endif
 %define build_plf 0
@@ -33,6 +33,7 @@ Source1:      	%{name}-48x48.png
 Source2:      	%{name}-32x32.png
 Source3:      	%{name}-16x16.png
 Patch:		glame-2.0.1-xdg.patch
+Patch1:		glame-2.0.2-rc1-format-strings.patch
 URL:       	http://glame.sourceforge.net/ 
 Buildroot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	libgnomeui2-devel
@@ -81,6 +82,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %endif
 %patch -p1
+%patch1 -p1
 %if %cvs
 ./autogen.sh
 %endif
