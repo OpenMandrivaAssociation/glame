@@ -4,7 +4,7 @@
 %define pre	rc1
 %define date	20070607
 %if %cvs
-%define release %mkrel 0.%cvs.1
+%define release %mkrel 0.%cvs.2
 %else
 %if %pre
 %define release	%mkrel 0.%date.%pre.3
