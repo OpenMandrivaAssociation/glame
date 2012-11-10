@@ -1,0 +1,77 @@
+diff -p -up glame-2.0.2-rc1/config.h.in~ glame-2.0.2-rc1/config.h.in
+--- glame-2.0.2-rc1/config.h.in~	2006-09-04 22:56:52.000000000 +0200
++++ glame-2.0.2-rc1/config.h.in	2009-01-28 09:22:40.000000000 +0100
+@@ -1,5 +1,8 @@
+ /* config.h.in.  Generated from configure.ac by autoheader.  */
+ 
++/* Define if building universal (internal helper macro) */
++#undef AC_APPLE_UNIVERSAL_BUILD
++
+ /* alsa.h in sys */
+ #undef ALSA_H_IN_SYS
+ 
+@@ -399,9 +402,17 @@
+ /* Version number of package */
+ #undef VERSION
+ 
+-/* Define to 1 if your processor stores words with the most significant byte
+-   first (like Motorola and SPARC, unlike Intel and VAX). */
+-#undef WORDS_BIGENDIAN
++/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
++   significant byte first (like Motorola and SPARC, unlike Intel). */
++#if defined AC_APPLE_UNIVERSAL_BUILD
++# if defined __BIG_ENDIAN__
++#  define WORDS_BIGENDIAN 1
++# endif
++#else
++# ifndef WORDS_BIGENDIAN
++#  undef WORDS_BIGENDIAN
++# endif
++#endif
+ 
+ /* Define to empty if `const' does not conform to ANSI C. */
+ #undef const
+diff -p -up glame-2.0.2-rc1/src/gui/util/glame_gui_utils.c~ glame-2.0.2-rc1/src/gui/util/glame_gui_utils.c
+--- glame-2.0.2-rc1/src/gui/util/glame_gui_utils.c~	2006-09-19 23:34:03.000000000 +0200
++++ glame-2.0.2-rc1/src/gui/util/glame_gui_utils.c	2009-01-28 09:48:42.000000000 +0100
+@@ -697,7 +697,7 @@ void glame_error_dialog(const char *mess
+ 	dialog = gtk_message_dialog_new(parent,
+ 			GTK_DIALOG_MODAL,
+ 			GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+-			message);
++					"%s", message);
+ 	gtk_dialog_run(GTK_DIALOG(dialog));
+ 	gtk_widget_destroy(dialog);
+ }
+@@ -708,7 +708,7 @@ void glame_warning_dialog(const char *me
+ 	dialog = gtk_message_dialog_new(parent,
+ 			GTK_DIALOG_MODAL,
+ 			GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE,
+-			message);
++			"%s", message);
+ 	gtk_dialog_run(GTK_DIALOG(dialog));
+ 	gtk_widget_destroy(dialog);
+ }
+@@ -719,7 +719,7 @@ void glame_info_dialog(const char *messa
+ 	dialog = gtk_message_dialog_new(parent,
+ 			GTK_DIALOG_MODAL,
+ 			GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
+-			message);
++			"%s", message);
+ 	gtk_dialog_run(GTK_DIALOG(dialog));
+ 	gtk_widget_destroy(dialog);
+ }
+diff -p -up glame-2.0.2-rc1/src/plugins/mixer.c~ glame-2.0.2-rc1/src/plugins/mixer.c
+--- glame-2.0.2-rc1/src/plugins/mixer.c~	2005-04-26 18:03:41.000000000 +0200
++++ glame-2.0.2-rc1/src/plugins/mixer.c	2009-01-28 09:44:57.000000000 +0100
+@@ -1212,8 +1212,8 @@ GtkWidget *glame_param_slider_new(filter
+ 	}
+ 
+ 	snprintf(formatted, 1023,
+-		 mixer_knob_formatter(lower, value, NULL));
+-	snprintf(xml, 1511,
++		 "%s", mixer_knob_formatter(lower, value, NULL));
++	snprintf(xml, 1511, "%s", 
+ "<?xml version=\"1.0\" standalone=\"no\"?>"
+ "<!DOCTYPE glade-interface SYSTEM \"http://glade.gnome.org/glade-2.0.dtd\">"
+ "<glade-interface>" 
