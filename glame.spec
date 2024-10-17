@@ -38,7 +38,7 @@ Source2:      	%{name}-32x32.png
 Source3:      	%{name}-16x16.png
 Patch:		glame-2.0.1-xdg.patch
 Patch1:		glame-2.0.2-rc1-format-strings.patch
-URL:       	http://glame.sourceforge.net/ 
+URL:       	https://glame.sourceforge.net/ 
 Buildroot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	libgnomeui2-devel
 BuildRequires: 	libglade2.0-devel
