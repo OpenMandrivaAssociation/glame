@@ -40,6 +40,11 @@ Patch:		glame-2.0.1-xdg.patch
 Patch1:		glame-2.0.2-rc1-format-strings.patch
 URL:       	https://glame.sourceforge.net/ 
 Buildroot: 	%{_tmppath}/%{name}-buildroot
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires: 	libgnomeui2-devel
 BuildRequires: 	libglade2.0-devel
 BuildRequires: 	guile-devel >= 1.6
